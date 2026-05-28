@@ -1,0 +1,38 @@
+import { NextResponse } from "next/server";
+import { connectDB } from "@/lib/db";
+import Contact from "@/models/Contact";
+
+export async function POST(req: Request) {
+  try {
+    const { name, email, phone, company, subject, message } = await req.json();
+
+    if (!name || !email || !subject || !message) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    await connectDB();
+
+    await Contact.create({
+      name,
+      email,
+      phone,
+      company,
+      subject,
+      message,
+    });
+
+    return NextResponse.json(
+      { success: true, message: "Message sent successfully! We'll get back to you soon." },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Contact form error:", error);
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
+  }
+}
