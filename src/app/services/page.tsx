@@ -11,7 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { servicesList } from "@/config/site";
+import { servicesList, siteConfig } from "@/config/site";
+import { useSEO } from "@/hooks/useSEO";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -23,6 +24,33 @@ const fadeInUp = {
 };
 
 export default function ServicesPage() {
+  // SEO with CollectionPage schema
+  useSEO({
+    title: "Services",
+    description:
+      "Comprehensive development services including web development, mobile apps, SaaS, CRM/ERP, UI/UX design, AI solutions, DevOps, digital marketing, and SEO services.",
+    url: "/services",
+    type: "website",
+    schema: {
+      "@type": "CollectionPage",
+      name: "Services | TechMintLab",
+      description:
+        "Professional development and digital services to help your business grow.",
+      mainEntity: {
+        "@type": "ItemList",
+        itemListElement: servicesList.map((service, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          item: {
+            "@type": "Service",
+            name: service.title,
+            description: service.description,
+            url: `${siteConfig.url}/services/${service.slug}`,
+          },
+        })),
+      },
+    },
+  });
   return (
     <div className="min-h-screen pt-24 pb-20">
       {/* Hero */}

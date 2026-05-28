@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Contact from "@/models/Contact";
+import { sendEmail, getContactConfirmationEmailHtml } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
@@ -23,6 +24,17 @@ export async function POST(req: Request) {
       subject,
       message,
     });
+
+    // Send auto-confirmation email to the submitter
+    const emailResult = await sendEmail({
+      to: email,
+      subject: "✅ We've Received Your Message - TechMintLab",
+      html: getContactConfirmationEmailHtml({ name, subject, message }),
+    });
+
+    if (!emailResult.success) {
+      console.error("Failed to send confirmation email to:", email);
+    }
 
     return NextResponse.json(
       { success: true, message: "Message sent successfully! We'll get back to you soon." },

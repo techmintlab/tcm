@@ -1,8 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Target, Eye, Heart, Users, Code2 } from "lucide-react";
+import { Target, Eye, Heart, Users, Code2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useSEO } from "@/hooks/useSEO";
+import { siteConfig } from "@/config/site";
 
 const team = [
   { name: "Arjun Mehta", role: "CEO & Founder", bio: "Visionary leader with 15+ years in tech" },
@@ -21,6 +23,47 @@ const milestones = [
 ];
 
 export default function AboutPage() {
+  // SEO with AboutPage and Organization schema
+  useSEO({
+    title: "About Us",
+    description:
+      "Learn about TechMintLab - a premium software marketplace and development studio. Our mission, team, and journey since 2020.",
+    url: "/about",
+    type: "website",
+    schema: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      description:
+        "Premium software marketplace and digital product platform helping businesses build faster and scale smarter.",
+      url: siteConfig.url,
+      logo: `${siteConfig.url}${siteConfig.logo}`,
+      foundingDate: "2020",
+      founder: {
+        "@type": "Person",
+        name: "Arjun Mehta",
+      },
+      email: siteConfig.contact.email,
+      telephone: siteConfig.contact.phone,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Bengaluru",
+        addressRegion: "Karnataka",
+        addressCountry: "India",
+      },
+      sameAs: Object.values(siteConfig.links),
+      employee: team.map((m) => ({
+        "@type": "Person",
+        name: m.name,
+        jobTitle: m.role,
+        description: m.bio,
+      })),
+      mainEntityOfPage: {
+        "@type": "AboutPage",
+        "@id": `${siteConfig.url}/about`,
+      },
+    },
+  });
+
   return (
     <div className="min-h-screen pt-24 pb-20">
       {/* Hero */}

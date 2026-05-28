@@ -37,6 +37,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCartStore } from "@/store/useCartStore";
 import { useSEO } from "@/hooks/useSEO";
+import { siteConfig } from "@/config/site";
 import { useSession, signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 
@@ -180,7 +181,7 @@ export default function ProductDetailPage() {
     }
   }, [activeTab, product?._id]);
 
-  // SEO
+  // SEO with enhanced Product schema
   const allImages = product
     ? [product.thumbnail, ...(product.images || [])].filter(Boolean)
     : [];
@@ -193,26 +194,54 @@ export default function ProductDetailPage() {
     schema: product
       ? {
           "@type": "Product",
+          "@id": `${siteConfig.url}/products/${product.slug}#product`,
           name: product.title,
           description: product.description,
-          image: product.thumbnail,
-          sku: product._id,
-          brand: { "@type": "Brand", name: "TechMintLab" },
-          offers: {
-            "@type": "Offer",
-            price: product.salePrice || product.price,
-            priceCurrency: "INR",
-            availability: "https://schema.org/InStock",
+          image: allImages.length > 0 ? allImages : product.thumbnail,
+          url: `${siteConfig.url}/products/${product.slug}`,
+          sku: product._id.toString().slice(-8).toUpperCase(),
+          mpn: product.slug,
+          category: product.category?.name || "Software",
+          brand: {
+            "@type": "Brand",
+            name: "TechMintLab",
           },
+          offers: product.pricingPlans?.length > 0
+            ? product.pricingPlans.map((plan: any) => ({
+                "@type": "Offer",
+                name: plan.name,
+                price: plan.price,
+                priceCurrency: product.currency || "INR",
+                priceValidUntil: new Date(
+                  Date.now() + 365 * 24 * 60 * 60 * 1000
+                ).toISOString().split("T")[0],
+                availability: "https://schema.org/InStock",
+                url: `${siteConfig.url}/products/${product.slug}`,
+              }))
+            : {
+                "@type": "Offer",
+                price: product.salePrice || product.price,
+                priceCurrency: product.currency || "INR",
+                priceValidUntil: new Date(
+                  Date.now() + 365 * 24 * 60 * 60 * 1000
+                ).toISOString().split("T")[0],
+                availability: "https://schema.org/InStock",
+                url: `${siteConfig.url}/products/${product.slug}`,
+              },
           ...(product.reviewCount > 0
             ? {
                 aggregateRating: {
                   "@type": "AggregateRating",
                   ratingValue: product.rating,
                   reviewCount: product.reviewCount,
+                  bestRating: 5,
+                  worstRating: 1,
                 },
               }
             : {}),
+          ...(product.isFeatured ? { award: "Featured Product" } : {}),
+          ...(product.isTrending ? { award: "Trending Product" } : {}),
+          dateModified: product.updatedAt?.split("T")[0],
         }
       : undefined,
   });

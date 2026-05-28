@@ -2,16 +2,84 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, Clock, MessageCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Clock, MessageCircle, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { useSEO } from "@/hooks/useSEO";
+import { siteConfig } from "@/config/site";
 import toast from "react-hot-toast";
 
 export default function ContactPage() {
+  // SEO with ContactPage + LocalBusiness schema
+  useSEO({
+    title: "Contact Us",
+    description:
+      "Get in touch with TechMintLab. Send us a message and we'll respond within 24 hours. Reach us via email, phone, or WhatsApp.",
+    url: "/contact",
+    type: "website",
+    schema: {
+      "@graph": [
+        {
+          "@type": "ContactPage",
+          name: "Contact TechMintLab",
+          description:
+            "Contact page for TechMintLab - premium software marketplace and development studio.",
+          mainEntity: {
+            "@id": `${siteConfig.url}#business`,
+          },
+        },
+        {
+          "@type": "LocalBusiness",
+          "@id": `${siteConfig.url}#business`,
+          name: siteConfig.name,
+          description: siteConfig.description,
+          url: siteConfig.url,
+          logo: `${siteConfig.url}/logo.png`,
+          image: `${siteConfig.url}/logo.png`,
+          email: siteConfig.contact.email,
+          telephone: siteConfig.contact.phone,
+          priceRange: "$$",
+          currenciesAccepted: "INR, USD",
+          paymentAccepted: ["Visa", "Mastercard", "UPI", "Net Banking", "Razorpay"],
+          foundingDate: "2024",
+          areaServed: ["India", "United States", "United Kingdom", "Canada", "Australia"],
+          sameAs: Object.values(siteConfig.links),
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: siteConfig.contact.phone,
+            contactType: "customer service",
+            email: siteConfig.contact.email,
+            availableLanguage: ["English", "Hindi"],
+          },
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Bengaluru",
+            addressRegion: "Karnataka",
+            addressCountry: "India",
+          },
+          openingHoursSpecification: [
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+              opens: "09:00",
+              closes: "18:00",
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: "Saturday",
+              opens: "10:00",
+              closes: "14:00",
+            },
+          ],
+        },
+      ],
+    },
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -52,6 +120,29 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen pt-24 pb-20">
+      {/* Breadcrumb */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-4">
+        <div className="flex items-center space-x-2 text-sm text-zinc-500">
+          <Link href="/" className="hover:text-emerald-600">Home</Link>
+          <ChevronRight className="h-4 w-4" />
+          <span className="text-zinc-900 dark:text-zinc-100">Contact</span>
+        </div>
+        {/* Breadcrumb structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+                { "@type": "ListItem", position: 2, name: "Contact", item: `${siteConfig.url}/contact` },
+              ],
+            }),
+          }}
+        />
+      </div>
+
       {/* Hero */}
       <section className="relative py-20 bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-950/50 dark:to-zinc-950">
         <div className="absolute inset-0 bg-grid" />

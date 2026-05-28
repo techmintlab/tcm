@@ -1,8 +1,97 @@
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+import { siteConfig } from "@/config/site";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Shipping & Delivery Policy",
+  description:
+    "Learn about TechMintLab's digital product delivery process. Instant download access, email confirmation, and lifetime access to purchased products.",
+  openGraph: {
+    title: "Shipping & Delivery Policy | TechMintLab",
+    description:
+      "Learn about TechMintLab's digital product delivery process.",
+    url: "/shipping-policy",
+    siteName: "TechMintLab",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shipping & Delivery Policy | TechMintLab",
+    description:
+      "Learn about TechMintLab's digital product delivery process.",
+  },
+  alternates: {
+    canonical: "/shipping-policy",
+  },
+};
 
 export default function ShippingPolicyPage() {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${siteConfig.url}/shipping-policy#webpage`,
+        url: `${siteConfig.url}/shipping-policy`,
+        name: "Shipping & Delivery Policy | TechMintLab",
+        description:
+          "Learn about TechMintLab's digital product delivery process.",
+        isPartOf: { "@id": `${siteConfig.url}#website` },
+        about: { "@type": "Thing", name: "Shipping & Delivery Policy" },
+        dateModified: "2025-01-01",
+        inLanguage: "en-US",
+        breadcrumb: { "@id": `${siteConfig.url}/shipping-policy#breadcrumb` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${siteConfig.url}/shipping-policy#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Shipping & Delivery Policy",
+            item: `${siteConfig.url}/shipping-policy`,
+          },
+        ],
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteConfig.url}#website`,
+        url: siteConfig.url,
+        name: siteConfig.name,
+        description: siteConfig.description,
+        publisher: {
+          "@type": "Organization",
+          name: siteConfig.name,
+          logo: `${siteConfig.url}/logo.png`,
+        },
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen pt-24 pb-20">
+      {/* Breadcrumb */}
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 mb-4">
+        <div className="flex items-center space-x-2 text-sm text-zinc-500">
+          <Link href="/" className="hover:text-emerald-600 transition-colors">
+            Home
+          </Link>
+          <ChevronRight className="h-4 w-4" />
+          <span className="text-zinc-900 dark:text-zinc-100">Shipping & Delivery Policy</span>
+        </div>
+      </div>
+
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <Badge variant="default" className="mb-4">Legal</Badge>

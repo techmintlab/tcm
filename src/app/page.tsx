@@ -22,8 +22,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { servicesList, technologiesList } from "@/config/site";
+import { servicesList, technologiesList, siteConfig } from "@/config/site";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { useSEO } from "@/hooks/useSEO";
 
 import type { Variants } from "framer-motion";
 
@@ -165,6 +166,27 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
 }
 
 export default function HomePage() {
+  // SEO with FAQPage schema for the FAQ section
+  useSEO({
+    title: undefined,
+    description: undefined,
+    url: "/",
+    schema: {
+      "@type": "FAQPage",
+      name: "Frequently Asked Questions - TechMintLab",
+      description:
+        "Everything you need to know about TechMintLab's products and services.",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  });
+
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [counts, setCounts] = useState({ products: 0, clients: 0, downloads: 0, countries: 0 });
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
