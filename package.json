@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "npx tsx --env-file=.env.local src/scripts/seed.ts",
-    "postbuild": "next-sitemap --config next-sitemap.config.js"
+ 
+  "postbuild": "next-sitemap --config next-sitemap.config.ts"
+ 
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.2",
